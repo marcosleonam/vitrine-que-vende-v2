@@ -6,7 +6,10 @@
   <title>Vitrine Que Vende — Transforme seu Instagram em uma máquina de vendas</title>
   <meta name="description" content="Treinamento prático e 100% online para transformar seu Instagram em uma vitrine que vende todos os dias.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="image" href="images/capa-curso.jpeg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="dns-prefetch" href="https://pay.hotmart.com">
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Inter',sans-serif; background:#0a0a0a; color:#fff; overflow-x:hidden; }
@@ -309,7 +312,7 @@
     </div>
     <a href="https://pay.hotmart.com/P105372326I" target="_blank" class="cta-btn">QUERO MINHA VITRINE AGORA</a>
     <div class="hero-img">
-      <img src="images/capa-curso.jpeg" alt="Vitrine Que Vende" loading="lazy">
+      <img src="images/capa-curso.jpeg" alt="Vitrine Que Vende" loading="eager" decoding="async">
     </div>
   </div>
 </section>
@@ -475,6 +478,46 @@
 <footer>
   <p>&copy; 2026 Vitrine Que Vende. Todos os direitos reservados.</p>
 </footer>
+
+<script>
+// Hotmart checkout autofill - passa dados do navegador via query params
+document.querySelectorAll('a[href*="pay.hotmart.com"]').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    let url = this.href;
+
+    // Tenta pegar dados salvos no navegador
+    const name = localStorage.getItem('vqv_name') || '';
+    const email = localStorage.getItem('vqv_email') || '';
+    const phone = localStorage.getItem('vqv_phone') || '';
+
+    // Hotmart aceita query params pra pre-fill
+    const params = new URLSearchParams();
+    if (name) params.set('name', name);
+    if (email) params.set('email', email);
+    if (phone) params.set('phoneNumber', phone);
+
+    // UTM tracking
+    const urlParams = new URLSearchParams(window.location.search);
+    ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].forEach(p => {
+      if (urlParams.get(p)) params.set(p, urlParams.get(p));
+    });
+
+    // Adiciona src pra tracking
+    params.set('src', 'landing-vitrine');
+
+    const separator = url.includes('?') ? '&' : '?';
+    window.open(url + separator + params.toString(), '_blank');
+  });
+});
+
+// Salva dados quando disponíveis (pra próxima visita)
+if ('credentials' in navigator) {
+  navigator.credentials.get({password: true}).then(cred => {
+    if (cred && cred.name) localStorage.setItem('vqv_name', cred.name);
+  }).catch(() => {});
+}
+</script>
 
 </body>
 </html>
